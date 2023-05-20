@@ -8,13 +8,13 @@
 * Return: Always 0.
 */
 int main(void)
-{char *args[MAX_ARGS];
+{char *args[3];
 int status;
 pid_t pid;
 char *command;
+char *end = "fail";
 size_t size = 100;
-int num_args = 1;
-int i = 0;
+int i = 0, j;
 while (1)
 {printf("#cisfun$ ");
 command = malloc(sizeof(char) * (size));
@@ -22,24 +22,24 @@ getline(&command, &size, stdin);
 while (command[i] != '\n' && command[i] != '\0')
 { i++; }
 command[i] = '\0';
-args[0] = command;
+j = 0;
+args[j] = command;
 for (i = 0; command[i] != '\0'; i++)
 {
 if (command[i] == ' ')
-{command[i] = '\0';
-args[num_args] = &command[i + 1];
-num_args++;
-if (num_args >= MAX_ARGS)
-{ break; }}}
-args[num_args] = NULL;
+{
+j++;
+args[j] = end;
+break; }}
+j++;
+args[j] = NULL;
 pid = fork();
 if (pid == 0)
-{execv(args[0], args);
-perror("execv");
+{execve(args[0], args, NULL);
+perror("./shell");
 exit(EXIT_FAILURE); }
 else if (pid < 0)
 { perror("fork"); }
 else
 { waitpid(pid, &status, 0); }}
-return (0);
-}
+return (0); }
